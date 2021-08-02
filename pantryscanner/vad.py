@@ -3,12 +3,11 @@ import time
 from . import tuning
 import usb.core
 import usb.util
-import pantryscanner as ps
 
 
 class VAD(threading.Thread):
 
-    def __init__(self, pantryscanner: ps.PantryScanner):
+    def __init__(self, pantryscanner):
         super().__init__()
         self._pantryscanner = pantryscanner
         self._dev = usb.core.find(idVendor=0x2886, idProduct=0x0018)
