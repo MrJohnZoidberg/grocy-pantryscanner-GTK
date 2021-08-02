@@ -13,14 +13,21 @@ class VAD(threading.Thread):
         self._dev = usb.core.find(idVendor=0x2886, idProduct=0x0018)
         self._tun = tuning.Tuning(self._dev)
         self._terminate = False
-        self._timer = threading.Timer(10, self.on_timer_finished)
+        self._timer = None
 
     def run(self, *args, **kwargs):
         if self._dev:
             while not self._terminate:
                 if self._tun.is_voice():
-                    self.on_voice_detected()
+                    print("New timer started")
+                    if self._timer and self._timer.is_alive():
+                        self._timer.cancel()
+                    else:
+                        self.on_voice_detected()
+
+                    self._timer = threading.Timer(10, self.on_timer_finished)
                     self._timer.start()
+                    threading.Timer(2, self.run).start()
                     return
                 else:
                     time.sleep(0.05)
@@ -33,8 +40,6 @@ class VAD(threading.Thread):
 
     def on_timer_finished(self):
         self._pantryscanner.screen_bright()
-        self._timer = threading.Timer(10, self.on_timer_finished)
-        self.run()
 
     def terminate(self):
         self._terminate = True

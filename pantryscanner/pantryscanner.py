@@ -31,7 +31,7 @@ class PantryScanner:
         self._backlight.brightness = 100
 
     def screen_dimmed(self):
-        self._backlight.brightness = 20
+        self._backlight.brightness = 80
 
     def get_config_value(self, *path):
         value = self.search_config_value(self._config, path)
