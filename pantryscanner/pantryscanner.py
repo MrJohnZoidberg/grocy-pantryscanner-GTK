@@ -27,6 +27,7 @@ class PantryScanner:
 
     def stop(self, *_):
         self.stop_activity_detection()
+        self._scanner.off()
         self._backlight.on()
         GPIO.cleanup()
         Gtk.main_quit()
@@ -48,12 +49,12 @@ class PantryScanner:
         self._activitydetection.join()
 
     def on_activity_detected(self):
-        self._backlight.on()
         self._scanner.on()
+        self._backlight.on()
 
     def on_sleep_started(self):
-        self._backlight.off()
         self._scanner.off()
+        self._backlight.off()
 
     def get_config_value(self, *path):
         value = self.search_config_value(self._config, path)
