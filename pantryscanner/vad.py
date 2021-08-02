@@ -33,8 +33,10 @@ class VAD(threading.Thread):
 
     def on_timer_finished(self):
         self._pantryscanner.screen_bright()
+        self._timer = threading.Timer(10, self.on_timer_finished)
         self.run()
 
     def terminate(self):
         self._terminate = True
-        self._timer.cancel()
+        if self._timer.is_alive():
+            self._timer.cancel()
