@@ -20,9 +20,9 @@ class VAD(threading.Thread):
             while not self._terminate:
                 try:
                     if tun.is_voice():
-                        self._pantryscanner.screen_bright()
-                        time.sleep(5)
                         self._pantryscanner.screen_dimmed()
+                        time.sleep(5)
+                        self._pantryscanner.screen_bright()
                     time.sleep(0.2)
                 except KeyboardInterrupt:
                     break

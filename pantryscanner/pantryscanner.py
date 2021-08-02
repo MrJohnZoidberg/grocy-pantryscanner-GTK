@@ -18,7 +18,7 @@ class PantryScanner:
         self._backlight = Backlight()
 
     def start(self):
-        self.screen_dimmed()
+        self.screen_bright()
         win = mainwindow.MainWindow(self)
         Gtk.main()
 
@@ -31,7 +31,7 @@ class PantryScanner:
         self._backlight.brightness = 100
 
     def screen_dimmed(self):
-        self._backlight.brightness = 30
+        self._backlight.brightness = 20
 
     def get_config_value(self, *path):
         value = self.search_config_value(self._config, path)
