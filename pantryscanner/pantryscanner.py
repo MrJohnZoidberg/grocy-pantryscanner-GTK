@@ -1,6 +1,7 @@
 from . import mainwindow
 from . import grocy
-from . import vad
+from . import activitydetection_voice
+from . import activitydetection_motion
 from rpi_backlight import Backlight
 import gi
 gi.require_version("Gtk", "3.0")
@@ -13,20 +14,36 @@ class PantryScanner:
         self._config = config
         self._config_default = config_default
         self._grocy = grocy.Grocy(self)
-        self._vad = vad.VAD(self)
-        self._vad.start()
+        self._activitydetection = self.setup_activity_detection()
         self._backlight = Backlight()
         self._backlight.power = True
         self._backlight.fade_duration = 0.5
+        self._backlight.brightness = 100
 
     def start(self):
         mainwindow.MainWindow(self)
         Gtk.main()
 
     def stop(self, *_):
-        self._vad.terminate()
-        self._vad.join()
+        self.stop_activity_detection()
+        self._backlight.brightness = 100
         Gtk.main_quit()
+
+    def setup_activity_detection(self):
+        if not self.get_config_value("sleep", "sleep_if_no_activity"):
+            return None
+        if self.get_config_value("sleep", "activity_detection_mode") == "motion":
+            ad = activitydetection_motion.ActivityDetectionMotion(self)
+        else:
+            ad = activitydetection_voice.ActivityDetectionVoice(self)
+        ad.start()
+        return ad
+
+    def stop_activity_detection(self):
+        if not self._activitydetection:
+            return
+        self._activitydetection.terminate()
+        self._activitydetection.join()
 
     def on_activity_detected(self):
         self._backlight.power = True

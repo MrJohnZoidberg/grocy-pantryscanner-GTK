@@ -1,3 +1,11 @@
 [grocy]
 server_url = "https://de.demo.grocy.info"
 api_key = ""
+
+[sleep]
+sleep_if_no_activity = true
+sleep_after_secs = 30
+activity_detection_mode = "voice"  # voice or motion
+
+    [sleep.voice_detection]
+    detection_threshold = 30  # range: 2 - 1000
