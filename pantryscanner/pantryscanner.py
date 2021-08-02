@@ -1,9 +1,11 @@
 from . import mainwindow
 from . import grocy
+from . import displaybacklight
 from . import activitydetection_voice
 from . import activitydetection_motion
-from rpi_backlight import Backlight
+from . import barcodescanner
 import gi
+import RPi.GPIO as GPIO
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
@@ -11,14 +13,13 @@ from gi.repository import Gtk
 class PantryScanner:
 
     def __init__(self, config, config_default):
+        GPIO.setmode(GPIO.BCM)
         self._config = config
         self._config_default = config_default
         self._grocy = grocy.Grocy(self)
+        self._backlight = displaybacklight.DisplayBacklight()
         self._activitydetection = self.setup_activity_detection()
-        self._backlight = Backlight()
-        self._backlight.power = True
-        self._backlight.fade_duration = 0.5
-        self._backlight.brightness = 100
+        self._scanner = barcodescanner.BarcodeScanner(self)
 
     def start(self):
         mainwindow.MainWindow(self)
@@ -26,7 +27,7 @@ class PantryScanner:
 
     def stop(self, *_):
         self.stop_activity_detection()
-        self._backlight.brightness = 100
+        self._backlight.on()
         Gtk.main_quit()
 
     def setup_activity_detection(self):
@@ -46,11 +47,12 @@ class PantryScanner:
         self._activitydetection.join()
 
     def on_activity_detected(self):
-        self._backlight.power = True
-        self._backlight.brightness = 100
+        self._backlight.on()
+        self._scanner.on()
 
     def on_sleep_started(self):
-        self._backlight.brightness = 0
+        self._backlight.off()
+        self._scanner.off()
 
     def get_config_value(self, *path):
         value = self.search_config_value(self._config, path)

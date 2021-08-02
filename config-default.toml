@@ -9,3 +9,6 @@ activity_detection_mode = "voice"  # voice or motion
 
     [sleep.voice_detection]
     detection_threshold = 30  # range: 2 - 1000
+
+[scanner]
+gpio_pin_relais = 4  # BCM notation
