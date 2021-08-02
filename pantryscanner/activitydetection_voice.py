@@ -40,7 +40,7 @@ class ActivityDetectionVoice(threading.Thread):
                 time.sleep(0.05)
 
     def _pause_for_few_secs(self):
-        if self._pause_timer.is_alive():
+        if  self._pause_timer and self._pause_timer.is_alive():
             self._pause_timer.cancel()
         self._detection_active = False
         self._pause_timer = threading.Timer(3, self._activate_detection)
