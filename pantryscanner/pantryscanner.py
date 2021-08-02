@@ -16,10 +16,11 @@ class PantryScanner:
         self._vad = vad.VAD(self)
         self._vad.start()
         self._backlight = Backlight()
+        self._backlight.power = True
+        self._backlight.fade_duration = 0.5
 
     def start(self):
-        self.screen_bright()
-        win = mainwindow.MainWindow(self)
+        mainwindow.MainWindow(self)
         Gtk.main()
 
     def stop(self, *_):
@@ -27,11 +28,12 @@ class PantryScanner:
         self._vad.join()
         Gtk.main_quit()
 
-    def screen_bright(self):
+    def on_activity_detected(self):
+        self._backlight.power = True
         self._backlight.brightness = 100
 
-    def screen_dimmed(self):
-        self._backlight.brightness = 80
+    def on_sleep_started(self):
+        self._backlight.brightness = 0
 
     def get_config_value(self, *path):
         value = self.search_config_value(self._config, path)

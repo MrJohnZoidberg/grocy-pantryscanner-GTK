@@ -3,17 +3,18 @@ import time
 from . import tuning
 import usb.core
 import usb.util
+import pantryscanner as ps
 
 
 class VAD(threading.Thread):
 
-    def __init__(self, pantryscanner):
+    def __init__(self, pantryscanner: ps.PantryScanner):
         super().__init__()
         self._pantryscanner = pantryscanner
         self._dev = usb.core.find(idVendor=0x2886, idProduct=0x0018)
         self._tun = tuning.Tuning(self._dev)
         self._terminate = False
-        self._timer = None
+        self._new_timer()
 
     def run(self, *args, **kwargs):
         if self._dev:
@@ -23,10 +24,9 @@ class VAD(threading.Thread):
                     if self._timer and self._timer.is_alive():
                         self._timer.cancel()
                     else:
-                        self.on_voice_detected()
+                        self._pantryscanner.on_activity_detected()
 
-                    self._timer = threading.Timer(10, self.on_timer_finished)
-                    self._timer.start()
+                    self._new_timer()
                     threading.Timer(2, self.run).start()
                     return
                 else:
@@ -35,11 +35,9 @@ class VAD(threading.Thread):
             while not self._terminate:
                 time.sleep(0.5)
 
-    def on_voice_detected(self):
-        self._pantryscanner.screen_dimmed()
-
-    def on_timer_finished(self):
-        self._pantryscanner.screen_bright()
+    def _new_timer(self):
+        self._timer = threading.Timer(10, self._pantryscanner.on_sleep_started)
+        self._timer.start()
 
     def terminate(self):
         self._terminate = True
