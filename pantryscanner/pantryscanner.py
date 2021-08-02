@@ -58,6 +58,8 @@ class PantryScanner:
         value = self.search_config_value(self._config, path)
         if value is None:
             return self.search_config_value(self._config_default, path)
+        else:
+            return value
 
     @staticmethod
     def search_config_value(value, path):
