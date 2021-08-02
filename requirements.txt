@@ -1,0 +1,7 @@
+PyGObject
+SpeechRecognition
+pycairo
+toml
+RPi.GPIO
+rpi-backlight
+pyUSB

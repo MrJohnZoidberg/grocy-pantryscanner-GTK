@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# PyCharm folder
+.idea/
+
+# project's config file
+config.toml
