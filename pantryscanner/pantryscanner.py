@@ -28,6 +28,7 @@ class PantryScanner:
     def stop(self, *_):
         self.stop_activity_detection()
         self._backlight.on()
+        GPIO.cleanup()
         Gtk.main_quit()
 
     def setup_activity_detection(self):
