@@ -10,6 +10,7 @@ class ActivityDetectionMotion(threading.Thread):
         self._pantryscanner = pantryscanner
         self._timeout_secs: int = self._pantryscanner.get_config_value("sleep", "sleep_after_secs")
         self._gpio_pir: int = self._pantryscanner.get_config_value("sleep", "motion_detection", "gpio_pir")
+        GPIO.setup(self._gpio_pir, GPIO.IN)
         self._pause_timer = None
         self._detection_active = True
         self._terminate = False
