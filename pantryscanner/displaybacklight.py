@@ -5,7 +5,6 @@ class DisplayBacklight:
 
     def __init__(self):
         self._backlight = Backlight()
-        self._backlight.fade_duration = 0.5
         self.on()
 
     def on(self):

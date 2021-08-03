@@ -4,7 +4,7 @@ api_key = ""
 
 [sleep]
 sleep_if_no_activity = true
-sleep_after_secs = 30
+sleep_after_secs = 45
 activity_detection_mode = "motion"  # voice or motion
 
     [sleep.motion_detection]
