@@ -24,9 +24,6 @@ class ActivityDetectionVoice(threading.Thread):
         if not self._dev:
             return
 
-        if 'do_pause' not in kwargs or not kwargs['do_pause']:
-            self._pause_for_few_secs()
-
         while not self._terminate:
             if self._tun.is_voice() and self._detection_active:
                 if self._timer and self._timer.is_alive():

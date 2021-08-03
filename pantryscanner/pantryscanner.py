@@ -22,7 +22,11 @@ class PantryScanner:
         self._scanner = barcodescanner.BarcodeScanner(self)
 
     def start(self):
-        mainwindow.MainWindow(self)
+        win = mainwindow.MainWindow()
+        win.connect("destroy", self.stop)
+        win.maximize()
+        win.set_icon_from_file("resources/grocy.png")
+        win.show_all()
         Gtk.main()
 
     def stop(self, *_):
