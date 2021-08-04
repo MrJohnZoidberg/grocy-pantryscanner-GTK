@@ -26,8 +26,8 @@ class PantryScanner:
         if self.get_config_value("barcodebuddy", "open_screen_on_start"):
             os.system(f"chromium-browser {self.get_config_value('barcodebuddy', 'bb_server_url')}screen.php")
             if self.get_config_value("barcodebuddy", "fullscreen_on_start"):
-                time.sleep(3)
-                os.system("xdotool search --onlyvisible --class Chromium windowfocus key F11")
+                time.sleep(5)
+                os.system("xdotool key F11")
         signal.pause()
 
     def stop(self, *_):
