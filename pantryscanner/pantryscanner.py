@@ -4,6 +4,7 @@ from . import activitydetection_voice
 from . import activitydetection_motion
 from . import barcodescanner
 import RPi.GPIO as GPIO
+import subprocess
 import os
 import time
 import signal
@@ -24,7 +25,7 @@ class PantryScanner:
 
     def start(self):
         if self.get_config_value("barcodebuddy", "open_screen_on_start"):
-            os.system(f"chromium-browser {self.get_config_value('barcodebuddy', 'bb_server_url')}screen.php")
+            subprocess.call(["chromium-browser", f"{self.get_config_value('barcodebuddy', 'bb_server_url')}screen.php"])
             if self.get_config_value("barcodebuddy", "fullscreen_on_start"):
                 time.sleep(5)
                 os.system("xdotool key F11")
