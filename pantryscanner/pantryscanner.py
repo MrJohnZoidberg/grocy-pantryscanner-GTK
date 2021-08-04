@@ -25,9 +25,11 @@ class PantryScanner:
 
     def start(self):
         if self.get_config_value("barcodebuddy", "open_screen_on_start"):
+            webbrowser.open_new_tab(f"{self.get_config_value('barcodebuddy', 'bb_server_url')}")
+            time.sleep(2)
             webbrowser.open_new_tab(f"{self.get_config_value('barcodebuddy', 'bb_server_url')}screen.php")
             if self.get_config_value("barcodebuddy", "fullscreen_on_start"):
-                time.sleep(5)
+                time.sleep(2)
                 os.system("xdotool key F11")
         signal.pause()
 
