@@ -24,11 +24,11 @@ class PantryScanner:
 
     def start(self):
         if self.get_config_value("barcodebuddy", "open_in_chromium_on_start"):
-            os.system(f"chromium --start-maximized {self.get_config_value('barcodebuddy', 'server_url')}")
+            os.system(f"chromium-browser --start-maximized {self.get_config_value('barcodebuddy', 'server_url')}")
             if self.get_config_value("barcodebuddy", "open_in_chromium_on_start") and \
                     self.get_config_value("barcodebuddy", "screen", "enable_screen"):
                 time.sleep(1)
-                os.system(f"chromium {self.get_config_value('barcodebuddy', 'server_url')}screen.php")
+                os.system(f"chromium-browser {self.get_config_value('barcodebuddy', 'server_url')}screen.php")
         signal.pause()
 
     def stop(self, *_):
