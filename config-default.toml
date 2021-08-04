@@ -1,6 +1,16 @@
 [grocy]
-server_url = "https://de.demo.grocy.info"
+server_url = "https://de.demo.grocy.info/"  # must end with a /
 api_key = ""
+
+[barcodebuddy]
+open_in_chromium_on_start = true
+server_url = "http://localhost/"  # must end with a /
+
+    [barcodebuddy.screen]
+    enable_screen = true
+    reload_page_after_sleep = true
+    scanner_dev_event_number = 5  # /dev/input/eventX number
+    bb_api_key = "BARCODEBUDDY-API-KEY"
 
 [sleep]
 sleep_if_no_activity = true

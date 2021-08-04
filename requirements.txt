@@ -5,3 +5,6 @@ toml
 RPi.GPIO
 rpi-backlight
 pyUSB
+pyglet
+evdev
+requests

@@ -1,13 +1,13 @@
-from . import mainwindow
 from . import grocy
 from . import displaybacklight
 from . import activitydetection_voice
 from . import activitydetection_motion
 from . import barcodescanner
-import gi
 import RPi.GPIO as GPIO
-gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk
+import os
+import time
+import signal
+import sys
 
 
 class PantryScanner:
@@ -18,23 +18,25 @@ class PantryScanner:
         self._config_default = config_default
         self._grocy = grocy.Grocy(self)
         self._backlight = displaybacklight.DisplayBacklight()
-        self._activitydetection = self.setup_activity_detection()
         self._scanner = barcodescanner.BarcodeScanner(self)
+        self._activitydetection = self.setup_activity_detection()
+        signal.signal(signal.SIGINT, self.stop)
 
     def start(self):
-        win = mainwindow.MainWindow()
-        win.connect("destroy", self.stop)
-        win.maximize()
-        win.set_icon_from_file("resources/grocy.png")
-        win.show_all()
-        Gtk.main()
+        if self.get_config_value("barcodebuddy", "open_in_chromium_on_start"):
+            os.system(f"chromium --start-maximized {self.get_config_value('barcodebuddy', 'server_url')}")
+            if self.get_config_value("barcodebuddy", "open_in_chromium_on_start") and \
+                    self.get_config_value("barcodebuddy", "screen", "enable_screen"):
+                time.sleep(1)
+                os.system(f"chromium {self.get_config_value('barcodebuddy', 'server_url')}screen.php")
+        signal.pause()
 
     def stop(self, *_):
         self.stop_activity_detection()
         self._scanner.off()
         self._backlight.on()
         GPIO.cleanup()
-        Gtk.main_quit()
+        sys.exit(0)
 
     def setup_activity_detection(self):
         if not self.get_config_value("sleep", "sleep_if_no_activity"):
@@ -55,6 +57,10 @@ class PantryScanner:
     def on_activity_detected(self):
         self._scanner.on()
         self._backlight.on()
+        if self.get_config_value("barcodebuddy", "open_in_chromium_on_start") and \
+                self.get_config_value("barcodebuddy", "screen", "enable_screen") and \
+                self.get_config_value("barcodebuddy", "screen", "reload_page_after_sleep"):
+            os.system("xdotool search --onlyvisible --class Chromium windowfocus key ctrl+r")
 
     def on_sleep_started(self):
         self._scanner.off()
