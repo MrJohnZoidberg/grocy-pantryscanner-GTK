@@ -72,8 +72,8 @@ class BarcodeScanner:
 
     def __init__(self, pantryscanner):
         self._pantryscanner = pantryscanner
-        self._bb_api_url = self._pantryscanner.get_config_value('barcodebuddy', 'server_url') + "api/"
-        self._bb_api_key = self._pantryscanner.get_config_value('barcodebuddy', 'screen', 'bb_api_key')
+        self._bb_api_url = self._pantryscanner.get_config_value('barcodebuddy', 'bb_server_url') + "api/"
+        self._bb_api_key = self._pantryscanner.get_config_value('barcodebuddy', 'bb_api_key')
         self.event_id = self._pantryscanner.get_config_value('barcodebuddy', 'screen', 'scanner_dev_event_number')
         self._gpio_relais: int = self._pantryscanner.get_config_value("scanner", "gpio_relais")
         self.sound = pyglet.media.load("resources/beep-07a.wav", streaming=False)

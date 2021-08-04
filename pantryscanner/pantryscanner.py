@@ -23,12 +23,11 @@ class PantryScanner:
         signal.signal(signal.SIGINT, self.stop)
 
     def start(self):
-        if self.get_config_value("barcodebuddy", "open_in_chromium_on_start"):
-            os.system(f"chromium-browser --start-maximized {self.get_config_value('barcodebuddy', 'server_url')}")
-            if self.get_config_value("barcodebuddy", "open_in_chromium_on_start") and \
-                    self.get_config_value("barcodebuddy", "screen", "enable_screen"):
-                time.sleep(1)
-                os.system(f"chromium-browser {self.get_config_value('barcodebuddy', 'server_url')}screen.php")
+        if self.get_config_value("barcodebuddy", "open_screen_on_start"):
+            os.system(f"chromium-browser {self.get_config_value('barcodebuddy', 'bb_server_url')}screen.php")
+            if self.get_config_value("barcodebuddy", "fullscreen_on_start"):
+                time.sleep(3)
+                os.system("xdotool search --onlyvisible --class Chromium windowfocus key F11")
         signal.pause()
 
     def stop(self, *_):
@@ -57,9 +56,8 @@ class PantryScanner:
     def on_activity_detected(self):
         self._scanner.on()
         self._backlight.on()
-        if self.get_config_value("barcodebuddy", "open_in_chromium_on_start") and \
-                self.get_config_value("barcodebuddy", "screen", "enable_screen") and \
-                self.get_config_value("barcodebuddy", "screen", "reload_page_after_sleep"):
+        if self.get_config_value("barcodebuddy", "open_screen_on_start") and \
+                self.get_config_value("barcodebuddy", "reload_page_after_sleep"):
             os.system("xdotool search --onlyvisible --class Chromium windowfocus key ctrl+r")
 
     def on_sleep_started(self):

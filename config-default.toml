@@ -3,18 +3,16 @@ server_url = "https://de.demo.grocy.info/"  # must end with a /
 api_key = ""
 
 [barcodebuddy]
-open_in_chromium_on_start = true
-server_url = "http://localhost/"  # must end with a /
-
-    [barcodebuddy.screen]
-    enable_screen = true
-    reload_page_after_sleep = true
-    scanner_dev_event_number = 5  # /dev/input/eventX number
-    bb_api_key = "BARCODEBUDDY-API-KEY"
+open_screen_on_start = true
+bb_server_url = "http://localhost/"  # must end with a /
+bb_api_key = "BARCODEBUDDY-API-KEY"
+fullscreen_on_start = true
+reload_page_after_sleep = true
+scanner_dev_event_number = 5  # /dev/input/eventX number
 
 [sleep]
 sleep_if_no_activity = true
-sleep_after_secs = 45
+sleep_after_secs = 20
 activity_detection_mode = "motion"  # voice or motion
 
     [sleep.motion_detection]
