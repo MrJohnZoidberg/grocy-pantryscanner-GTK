@@ -1,5 +1,6 @@
 import speech_recognition as sr
 import threading
+import requests
 
 
 class SpeechRecognition:
@@ -7,6 +8,8 @@ class SpeechRecognition:
         self._r = sr.Recognizer()
         self._recording_thread = None
         self._pantryscanner = pantryscanner
+        self._bb_api_url = self._pantryscanner.get_config_value('barcodebuddy', 'bb_server_url') + "api/"
+        self._bb_api_key = self._pantryscanner.get_config_value('barcodebuddy', 'bb_api_key')
 
     def start_recording(self):
         self._recording_thread = threading.Thread(target=self._record_speech)
@@ -22,8 +25,11 @@ class SpeechRecognition:
     def _result(self, audio):
         # recognize speech using Google Speech Recognition
         try:
-            print("Google Speech Recognition thinks you said " + self._r.recognize_google(audio))
+            text = self._r.recognize_google(audio, language="de-DE")
+            print("Google Speech Recognition hat verstanden: " + text)
+            requests.get(self._bb_api_url + 'action/name?apikey=' + self._bb_api_key
+                         + '&text=' + text)
         except sr.UnknownValueError:
-            print("Google Speech Recognition could not understand audio")
+            print("Google Speech Recognition konnte Audio nicht verstehen")
         except sr.RequestError as e:
-            print("Could not request results from Google Speech Recognition service; {0}".format(e))
+            print("Anfrage zu Google Speech Recognition ist fehlgeschlagen; {0}".format(e))

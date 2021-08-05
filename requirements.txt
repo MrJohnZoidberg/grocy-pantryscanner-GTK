@@ -1,5 +1,6 @@
 PyGObject
 SpeechRecognition
+PyAudio
 pycairo
 toml
 RPi.GPIO
