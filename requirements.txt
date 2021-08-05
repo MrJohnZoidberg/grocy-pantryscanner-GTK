@@ -8,3 +8,4 @@ pyUSB
 pyglet
 evdev
 requests
+flask

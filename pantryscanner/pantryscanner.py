@@ -3,6 +3,8 @@ from . import displaybacklight
 from . import activitydetection_voice
 from . import activitydetection_motion
 from . import barcodescanner
+from . import server
+from . import speechrecognition
 import RPi.GPIO as GPIO
 import webbrowser
 import os
@@ -21,6 +23,8 @@ class PantryScanner:
         self._backlight = displaybacklight.DisplayBacklight()
         self._scanner = barcodescanner.BarcodeScanner(self)
         self._activitydetection = self.setup_activity_detection()
+        self._server = server.Server(self)
+        self._speechrecognition = speechrecognition.SpeechRecognition(self)
         signal.signal(signal.SIGINT, self.stop)
 
     def start(self):
@@ -31,7 +35,7 @@ class PantryScanner:
             if self.get_config_value("barcodebuddy", "fullscreen_on_start"):
                 time.sleep(2)
                 os.system("xdotool key F11")
-        signal.pause()
+        self._server.start()
 
     def stop(self, *_):
         self.stop_activity_detection()
@@ -66,6 +70,9 @@ class PantryScanner:
     def on_sleep_started(self):
         self._scanner.off()
         self._backlight.off()
+
+    def start_speech_recognition(self):
+        self._speechrecognition.start_recording()
 
     def get_config_value(self, *path):
         value = self.search_config_value(self._config, path)
