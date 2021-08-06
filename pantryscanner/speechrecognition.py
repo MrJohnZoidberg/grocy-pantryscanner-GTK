@@ -27,8 +27,8 @@ class SpeechRecognition:
         try:
             text = self._r.recognize_google(audio, language="de-DE")
             print("Google Speech Recognition hat verstanden: " + text)
-            requests.get(self._bb_api_url + 'action/name?apikey=' + self._bb_api_key
-                         + '&text=' + text)
+            requests.get(self._bb_api_url + 'action/product?apikey=' + self._bb_api_key
+                         + '&name=' + text)
         except sr.UnknownValueError:
             print("Google Speech Recognition konnte Audio nicht verstehen")
         except sr.RequestError as e:
