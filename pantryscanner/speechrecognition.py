@@ -28,12 +28,14 @@ class SpeechRecognition:
 
     def start_listening(self):
         self.is_listening = True
+        self._start_sound.play()
         pixel_ring.spin()
         self._stop_listening_method = self._recognizer.listen_in_background(self._microphone, self._callback)
 
     def stop_listening(self):
         self._stop_listening_method(True)
         pixel_ring.off()
+        self._stop_sound.play()
         self.is_listening = False
 
     def _callback(self, recognizer, audio):
