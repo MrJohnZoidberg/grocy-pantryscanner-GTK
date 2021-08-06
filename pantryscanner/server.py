@@ -15,7 +15,7 @@ class Server:
         self._server_thread.start()
 
     @staticmethod
-    @api.route('/start_listening', methods=['POST'])
+    @api.route('/toggle_listening', methods=['POST'])
     def start_listening():
         _pantryscanner.start_speech_recognition()
         return json.dumps({"success": True}), 201

@@ -33,8 +33,9 @@ class SpeechRecognition:
         self._stop_listening_method = self._recognizer.listen_in_background(self._microphone, self._callback)
 
     def stop_listening(self):
-        self._stop_listening_method(True)
+        self._stop_listening_method(False)
         pixel_ring.off()
+        requests.get(self._bb_api_url + 'action/info_stop_listening?apikey=' + self._bb_api_key)
         self._stop_sound.play()
         self.is_listening = False
 
