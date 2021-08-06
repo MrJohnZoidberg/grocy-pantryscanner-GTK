@@ -72,7 +72,10 @@ class PantryScanner:
         self._backlight.off()
 
     def start_speech_recognition(self):
-        self._speechrecognition.start_recording()
+        if self._speechrecognition.is_listening:
+            self._speechrecognition.stop_listening()
+        else:
+            self._speechrecognition.start_listening()
 
     def get_config_value(self, *path):
         value = self.search_config_value(self._config, path)
