@@ -111,11 +111,12 @@ class BarcodeScanner:
                             if e.keycode == "KEY_ENTER":
                                 self.sound.play()
                                 self.off()
-                                self.timer_scanner_pause = threading.Timer(1, self.on)
                                 print("Sending :" + data)
                                 requests.get(self._bb_api_url + 'action/scan?apikey=' + self._bb_api_key
                                              + '&add=' + data)
                                 data = ""
+                                self.timer_scanner_pause = threading.Timer(1, self.on)
+                                self.timer_scanner_pause.start()
                             else:
                                 data += self.parse_key_to_char(e.keycode)
             except OSError:
