@@ -80,6 +80,7 @@ class BarcodeScanner:
         GPIO.setup(self._gpio_relais, GPIO.OUT)
         self.thread = None
         self.terminate_thread = False
+        self.timer_scanner_pause = None
         self.on()
 
     def on(self):
@@ -90,6 +91,8 @@ class BarcodeScanner:
 
     def off(self):
         GPIO.output(self._gpio_relais, GPIO.LOW)
+        if self.timer_scanner_pause and self.timer_scanner_pause.is_alive():
+            self.timer_scanner_pause.cancel()
         self.terminate_thread = True
         if self.thread and self.thread.is_alive():
             self.thread.join()
@@ -106,15 +109,17 @@ class BarcodeScanner:
                         e = categorize(event)
                         if e.keystate == e.key_up:
                             if e.keycode == "KEY_ENTER":
-                                print("Sending :" + data)
                                 self.sound.play()
+                                self.off()
+                                self.timer_scanner_pause = threading.Timer(1, self.on)
+                                print("Sending :" + data)
                                 requests.get(self._bb_api_url + 'action/scan?apikey=' + self._bb_api_key
                                              + '&add=' + data)
                                 data = ""
                             else:
                                 data += self.parse_key_to_char(e.keycode)
             except OSError:
-                time.sleep(1)
+                time.sleep(0.5)
 
     @staticmethod
     def parse_key_to_char(val):
