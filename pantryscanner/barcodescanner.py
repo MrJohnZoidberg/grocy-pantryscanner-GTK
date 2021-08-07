@@ -97,6 +97,17 @@ class BarcodeScanner:
         if self.thread and self.thread.is_alive():
             self.thread.join()
 
+    def off_for_few_secs(self):
+        GPIO.output(self._gpio_relais, GPIO.LOW)
+        if self.timer_scanner_pause and self.timer_scanner_pause.is_alive():
+            self.timer_scanner_pause.cancel()
+
+        def start_timer():
+            self.timer_scanner_pause = threading.Timer(1, self.on)
+            self.timer_scanner_pause.start()
+
+        return start_timer
+
     def read_input(self):
         while not self.terminate_thread:
             try:
@@ -110,13 +121,12 @@ class BarcodeScanner:
                         if e.keystate == e.key_up:
                             if e.keycode == "KEY_ENTER":
                                 self.sound.play()
-                                self.off()
+                                start_timer = self.off_for_few_secs()
                                 print("Sending :" + data)
                                 requests.get(self._bb_api_url + 'action/scan?apikey=' + self._bb_api_key
                                              + '&add=' + data)
                                 data = ""
-                                self.timer_scanner_pause = threading.Timer(1, self.on)
-                                self.timer_scanner_pause.start()
+                                start_timer()
                             else:
                                 data += self.parse_key_to_char(e.keycode)
             except OSError:
