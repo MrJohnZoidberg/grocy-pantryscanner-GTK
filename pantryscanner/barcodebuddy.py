@@ -8,6 +8,9 @@ class BarcodeBuddy:
         self._pantryscanner = pantryscanner
         self._bb_api_url = self._pantryscanner.get_config_value('barcodebuddy', 'bb_server_url') + "api/"
         self._bb_api_key = self._pantryscanner.get_config_value('barcodebuddy', 'bb_api_key')
+        self._revert_mins = self._pantryscanner.get_config_value(
+            'sleep', 'revert_transaction_state_to_consume_after_mins'
+        )
         self._revert_timer = None
         self.is_state_purchase = False
 
@@ -15,7 +18,8 @@ class BarcodeBuddy:
         self.stop_revert_timer()
         if not self.is_state_purchase:
             return
-        self._revert_timer = threading.Timer(30, self._revert_state_to_consume)
+        self._revert_timer = threading.Timer(self._revert_mins * 60, self._revert_state_to_consume)
+        self._revert_timer.start()
 
     def stop_revert_timer(self):
         if self._revert_timer and self._revert_timer.is_alive():

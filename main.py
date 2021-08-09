@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import pantryscanner
+import pantryscanner.pantryscanner as pantryscanner
 import toml
 
 CONFIG_FILE = "config.toml"

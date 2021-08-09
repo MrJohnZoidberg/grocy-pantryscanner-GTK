@@ -1,7 +1,3 @@
-[grocy]
-server_url = "https://de.demo.grocy.info/"  # must end with a /
-api_key = ""
-
 [barcodebuddy]
 open_screen_on_start = true
 bb_server_url = "http://localhost/"  # must end with a /
@@ -13,6 +9,7 @@ scanner_dev_event_number = 5  # /dev/input/eventX number
 [sleep]
 sleep_if_no_activity = true
 sleep_after_secs = 20
+revert_transaction_state_to_consume_after_mins = 15
 activity_detection_mode = "motion"  # voice or motion
 
     [sleep.motion_detection]

@@ -1,5 +1,4 @@
 import speech_recognition as sr
-import threading
 import requests
 import pyglet
 from pixel_ring import pixel_ring
