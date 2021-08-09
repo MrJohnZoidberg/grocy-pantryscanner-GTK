@@ -19,12 +19,8 @@ class SpeechRecognition:
         self.is_listening = False
         self._stop_listening_method = None
         with self._microphone as source:
-            self._start_sound.play()
-            pixel_ring.spin()
             # we only need to calibrate once, before we start listening
             self._recognizer.adjust_for_ambient_noise(source)
-            self._stop_sound.play()
-            pixel_ring.off()
 
     def start_listening(self):
         self.is_listening = True

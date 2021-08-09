@@ -1,4 +1,4 @@
-from . import grocy
+from . import barcodebuddy
 from . import displaybacklight
 from . import activitydetection_voice
 from . import activitydetection_motion
@@ -19,7 +19,7 @@ class PantryScanner:
         GPIO.setmode(GPIO.BCM)
         self._config = config
         self._config_default = config_default
-        self._grocy = grocy.Grocy(self)
+        self._barcodebuddy = barcodebuddy.BarcodeBuddy(self)
         self._backlight = displaybacklight.DisplayBacklight()
         self._scanner = barcodescanner.BarcodeScanner(self)
         self._activitydetection = self.setup_activity_detection()
@@ -29,8 +29,6 @@ class PantryScanner:
 
     def start(self):
         if self.get_config_value("barcodebuddy", "open_screen_on_start"):
-            webbrowser.open_new_tab(f"{self.get_config_value('barcodebuddy', 'bb_server_url')}")
-            time.sleep(2)
             webbrowser.open_new_tab(f"{self.get_config_value('barcodebuddy', 'bb_server_url')}screen.php")
             if self.get_config_value("barcodebuddy", "fullscreen_on_start"):
                 time.sleep(2)
@@ -41,6 +39,7 @@ class PantryScanner:
         self.stop_activity_detection()
         self._scanner.off()
         self._backlight.on()
+        self._barcodebuddy.stop_revert_timer()
         GPIO.cleanup()
         sys.exit(0)
 
@@ -63,19 +62,24 @@ class PantryScanner:
     def on_activity_detected(self):
         self._scanner.on()
         self._backlight.on()
+        self._barcodebuddy.stop_revert_timer()
         if self.get_config_value("barcodebuddy", "open_screen_on_start") and \
                 self.get_config_value("barcodebuddy", "reload_page_after_sleep"):
             os.system("xdotool search --onlyvisible --class Chromium windowfocus key ctrl+r")
 
     def on_sleep_started(self):
-        self._scanner.off()
         self._backlight.off()
+        self._scanner.off()
+        self._barcodebuddy.start_revert_timer()
 
-    def start_speech_recognition(self):
+    def toggle_speech_recognition(self):
         if self._speechrecognition.is_listening:
             self._speechrecognition.stop_listening()
         else:
             self._speechrecognition.start_listening()
+
+    def set_transaction_state(self, is_purchase):
+        self._barcodebuddy.is_state_purchase = is_purchase
 
     def get_config_value(self, *path):
         value = self.search_config_value(self._config, path)

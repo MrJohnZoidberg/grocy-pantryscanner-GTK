@@ -1,4 +1,4 @@
-from flask import Flask, json
+from flask import Flask, json, request
 import threading
 
 api = Flask(__name__)
@@ -16,8 +16,15 @@ class Server:
 
     @staticmethod
     @api.route('/toggle_listening', methods=['POST'])
-    def start_listening():
-        _pantryscanner.start_speech_recognition()
+    def toggle_listening():
+        _pantryscanner.toggle_speech_recognition()
+        return json.dumps({"success": True}), 201
+
+    @staticmethod
+    @api.route('/info_transaction_state_changed', methods=['POST'])
+    def state_changed():
+        barcode = request.args.get('barcode', default='', type=str)
+        _pantryscanner.set_transaction_state(barcode == "BBUDDY-P")
         return json.dumps({"success": True}), 201
 
 
